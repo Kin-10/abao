@@ -998,7 +998,7 @@ function humanizePythonTransformRange(p: DynamicObject): ParamItem[] {
   return items;
 }
 
-function humanizeDirectJs(p: DynamicObject, codeLabel: string): ParamItem[] {
+function humanizeDirectJs(p: DynamicObject): ParamItem[] {
   const items: ParamItem[] = [];
 
   if (p.explanation) {
@@ -1010,8 +1010,7 @@ function humanizeDirectJs(p: DynamicObject, codeLabel: string): ParamItem[] {
     const lines = source.split(/\r?\n/u).length;
     const oneLine = source.replace(/\s+/gu, " ").trim();
     const compact = oneLine.length > 140 ? `${oneLine.slice(0, 137)}…` : oneLine;
-    const label = codeLabel === "WPS JSAPI" ? l("WPS JSAPI") : l("Office.js");
-    items.push({ label, value: compact.length > 0 ? compact : v("empty") });
+    items.push({ label: l("Office.js"), value: compact.length > 0 ? compact : v("empty") });
     if (lines > 1) {
       items.push({ label: l("Code lines"), value: String(lines) });
     }
@@ -1021,11 +1020,7 @@ function humanizeDirectJs(p: DynamicObject, codeLabel: string): ParamItem[] {
 }
 
 function humanizeExecuteOfficeJs(p: DynamicObject): ParamItem[] {
-  return humanizeDirectJs(p, "Office.js");
-}
-
-function humanizeExecuteWpsJs(p: DynamicObject): ParamItem[] {
-  return humanizeDirectJs(p, "WPS JSAPI");
+  return humanizeDirectJs(p);
 }
 
 /* ── Shared helpers ─────────────────────────────────────────── */
@@ -1083,7 +1078,6 @@ const EXTRA_HUMANIZERS = {
   files: humanizeFiles,
   python_transform_range: humanizePythonTransformRange,
   execute_office_js: humanizeExecuteOfficeJs,
-  execute_wps_js: humanizeExecuteWpsJs,
 } satisfies Record<AuxiliaryUiToolName, HumanizerFn>;
 
 const HUMANIZERS: Record<string, HumanizerFn> = {

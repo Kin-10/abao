@@ -1,17 +1,17 @@
-/** Host abstraction types for Office, WPS, and browser/UI-test runtimes. */
+/** Host abstraction types for Office and browser/UI-test runtimes. */
 
 import type { SettingsStore } from "../storage/local/settings-store.js";
 
 import type { SessionWorkbookPartition } from "../workbook/session-association.js";
 import type { WorkbookContext } from "./workbook-context.js";
 
-export type SpreadsheetHostKind = "office" | "wps" | "browser";
+export type SpreadsheetHostKind = "office" | "browser";
 
 export interface SpreadsheetHostReadyInfo {
   kind: SpreadsheetHostKind;
   nativeHost: string | null;
   nativePlatform: string | null;
-  reason: "office-ready" | "office-unavailable" | "office-timeout" | "wps-jsapi" | "browser";
+  reason: "office-ready" | "office-unavailable" | "office-timeout" | "browser";
 }
 
 export type SpreadsheetHostReadyCallback = (info: SpreadsheetHostReadyInfo) => void;

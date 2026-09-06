@@ -2,7 +2,7 @@
  * Welcome/login overlay shown when no providers are configured.
  */
 
-import { t, initLanguage, getLanguage } from "../language/index.js";
+import { t } from "../language/index.js";
 
 import type { ProviderKeysStore } from "../storage/local/provider-keys-store.js";
 import { getAppStorage } from "../storage/local/app-storage.js";
@@ -35,7 +35,7 @@ async function testLocalHttpsProxy(proxyUrl: string): Promise<boolean> {
 }
 
 export async function showWelcomeLogin(providerKeys: ProviderKeysStore): Promise<void> {
-  const { VISIBLE_PROVIDERS, buildProviderRow } = await import("../ui/provider-login.js");
+  const { VISIBLE_PROVIDERS, buildProviderRow, filterEnabledModelProviders } = await import("../ui/provider-login.js");
 
   // Make OAuth flows usable even before the user can access /settings.
   try {
@@ -83,8 +83,12 @@ export async function showWelcomeLogin(providerKeys: ProviderKeysStore): Promise
     const titleId = `${WELCOME_LOGIN_OVERLAY_ID}-title`;
     const subtitleId = `${WELCOME_LOGIN_OVERLAY_ID}-subtitle`;
 
-    const logo = createElement("div", "pi-welcome-logo");
-    logo.textContent = "π";
+    const logo = createElement("img", "pi-welcome-logo");
+    logo.src = "/assets/logo.png";
+    logo.alt = "Pi for Excel";
+    logo.width = 72;
+    logo.height = 72;
+    logo.decoding = "async";
 
     const title = createElement("h2", "pi-welcome-title");
     title.id = titleId;
@@ -167,57 +171,7 @@ export async function showWelcomeLogin(providerKeys: ProviderKeysStore): Promise
     proxyPanel.append(proxyTopRow, proxyUrlRow, proxyHint);
 
 
-    // Language bar at the top
-    const langBar = createElement("div", "pi-welcome-lang-bar");
-    langBar.style.cssText = "display:flex;justify-content:flex-end;gap:4px;padding:4px 8px;";
-
-    const engBtn = createElement("button");
-    engBtn.type = "button";
-    engBtn.textContent = t("language.english");
-    engBtn.style.cssText = "font-size:11px;padding:2px 8px;border:1px solid #ccc;border-radius:4px;background:var(--pi-bg, #fff);cursor:pointer;";
-
-    const zhBtn = createElement("button");
-    zhBtn.type = "button";
-    zhBtn.textContent = "中文";
-    zhBtn.style.cssText = "font-size:11px;padding:2px 8px;border:1px solid #ccc;border-radius:4px;background:var(--pi-bg, #fff);cursor:pointer;";
-
-    const currentLang2 = getLanguage();
-    if (currentLang2 === "zh-CN") {
-      zhBtn.style.borderColor = "var(--color-accent, #3b82f6)";
-      zhBtn.style.color = "var(--color-accent, #3b82f6)";
-    } else {
-      engBtn.style.borderColor = "var(--color-accent, #3b82f6)";
-      engBtn.style.color = "var(--color-accent, #3b82f6)";
-    }
-
-    engBtn.addEventListener("click", () => {
-      if (getLanguage() === "en") return;
-      initLanguage("en");
-      void (async () => {
-        try {
-          const storage = getAppStorage();
-          await storage.settings.set("language", "en");
-          location.reload();
-        } catch { /* ignore */ }
-      })();
-    });
-
-    zhBtn.addEventListener("click", () => {
-      if (getLanguage() === "zh-CN") return;
-      initLanguage("zh-CN");
-      void (async () => {
-        try {
-          const storage = getAppStorage();
-          await storage.settings.set("language", "zh-CN");
-          location.reload();
-        } catch { /* ignore */ }
-      })();
-    });
-
-    langBar.append(engBtn, zhBtn);
-
     dialog.card.replaceChildren(
-      langBar,
       logo,
       title,
       subtitle,
@@ -299,7 +253,7 @@ export async function showWelcomeLogin(providerKeys: ProviderKeysStore): Promise
         onConnected: (_row, _id, label) => {
           void (async () => {
             const updated = await providerKeys.list();
-            setActiveProviders(new Set(updated));
+            setActiveProviders(filterEnabledModelProviders(updated));
             document.dispatchEvent(new CustomEvent("pi:providers-changed"));
             showToast(t("welcome.toast.connected", { label }), 3200);
             closeOverlay();
@@ -308,7 +262,7 @@ export async function showWelcomeLogin(providerKeys: ProviderKeysStore): Promise
         onDisconnected: (_row, _id, label) => {
           void (async () => {
             const updated = await providerKeys.list();
-            setActiveProviders(new Set(updated));
+            setActiveProviders(filterEnabledModelProviders(updated));
             document.dispatchEvent(new CustomEvent("pi:providers-changed"));
             showToast(t("welcome.toast.disconnected", { label }));
           })();

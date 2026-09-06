@@ -25,8 +25,7 @@ function piAuthPlugin(): Plugin {
       server.middlewares.use("/__pi-auth", (req: IncomingMessage, res: ServerResponse) => {
         // SECURITY: auth.json can contain API keys + refresh tokens.
         // Only serve it to loopback clients on loopback hostnames (Excel webviews,
-        // local browser). QEMU user networking can make WPS guest traffic appear
-        // loopback to Vite, so also require a localhost/127.0.0.1 Host header by default.
+        // local browser). Also require a localhost/127.0.0.1 Host header by default.
         const remote = req.socket?.remoteAddress;
         if (!isPiAuthRequestAllowed({ remoteAddress: remote, hostHeader: req.headers.host, allowNonLocalHost })) {
           res.statusCode = 403;

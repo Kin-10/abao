@@ -2,7 +2,7 @@
  * Workbook context primitives.
  *
  * Compatibility wrapper around the current SpreadsheetHost. The hashing and
- * label helpers live in `src/host/workbook-context.ts` so Office and future WPS
+ * label helpers live in `src/host/workbook-context.ts` so Office and browser
  * adapters share the same privacy-preserving identity semantics.
  */
 

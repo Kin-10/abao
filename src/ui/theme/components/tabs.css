@@ -33,14 +33,13 @@ pi-sidebar {
 .pi-session-tabs::after {
   content: '';
   position: absolute;
-  bottom: -24px;
+  bottom: -20px;
   left: 0;
   right: 0;
-  height: 24px;
+  height: 20px;
   background: linear-gradient(
     to bottom,
-    oklch(0.98 0.002 90 / 0.5),
-    oklch(0.98 0.002 90 / 0.2) 40%,
+    var(--pi-surface-translucent),
     transparent
   );
   pointer-events: none;
@@ -112,7 +111,7 @@ pi-sidebar {
 }
 
 .pi-session-tab.is-active {
-  background: oklch(0.45 0.12 160 / 0.18);
+  background: var(--green-alpha-12);
   border-color: var(--green-alpha-25);
   color: var(--foreground);
 }
@@ -207,9 +206,9 @@ pi-sidebar {
 }
 
 .pi-session-tab.is-active .pi-session-tab__close {
-  background: oklch(1 0 0 / 0.58);
+  background: var(--white-alpha-70);
   border-color: var(--green-alpha-20);
-  color: oklch(0.43 0.02 160);
+  color: var(--accent-foreground);
 }
 
 .pi-session-tab__close:hover {
@@ -259,9 +258,9 @@ pi-sidebar {
 }
 
 .pi-session-tab.is-active .pi-session-tab__close:disabled:hover {
-  background: oklch(1 0 0 / 0.58);
+  background: var(--white-alpha-70);
   border-color: var(--green-alpha-20);
-  color: oklch(0.43 0.02 160);
+  color: var(--accent-foreground);
 }
 
 .pi-session-tab-context-menu {
@@ -272,7 +271,7 @@ pi-sidebar {
   background: var(--glass-bg-solid);
   backdrop-filter: var(--glass-blur-dropdown);
   -webkit-backdrop-filter: var(--glass-blur-dropdown);
-  box-shadow: var(--glass-shadow-lg), var(--glass-highlight), var(--glass-inner-shadow);
+  box-shadow: var(--glass-shadow-lg);
 }
 
 .pi-session-tab-context-menu--floating {
@@ -295,7 +294,7 @@ pi-sidebar {
 }
 
 .pi-session-tab-context-menu__item:hover:not(:disabled) {
-  background: var(--white-alpha-45);
+  background: var(--muted);
 }
 
 .pi-session-tab-context-menu__item:disabled {
@@ -304,18 +303,13 @@ pi-sidebar {
 }
 
 .pi-session-tab-context-menu__item--danger {
-  color: oklch(0.58 0.2 27);
+  color: oklch(0.52 0.18 25);
 }
 
 .pi-session-tab-context-menu__divider {
   height: 1px;
   margin: 4px 6px;
-  background: linear-gradient(
-    90deg,
-    var(--white-alpha-40),
-    var(--alpha-6),
-    var(--white-alpha-40)
-  );
+  background: var(--alpha-6);
 }
 
 /* ── Utilities menu trigger (gear in tab strip) ── */
@@ -326,9 +320,8 @@ pi-sidebar {
 }
 
 .pi-utilities-btn {
-  border: 1px solid var(--alpha-12);
-  background:
-    linear-gradient(170deg, var(--white-alpha-70), var(--white-alpha-35));
+  border: 1px solid var(--alpha-10);
+  background: var(--pill-bg);
   color: var(--muted-foreground);
   width: 28px;
   height: 28px;
@@ -339,13 +332,11 @@ pi-sidebar {
   justify-content: center;
   line-height: 1;
   flex-shrink: 0;
-  box-shadow: var(--glass-shadow), var(--glass-highlight), var(--glass-inner-shadow);
+  box-shadow: none;
   transition:
     background var(--duration-fast),
     color var(--duration-fast),
-    box-shadow var(--duration-fast),
-    border-color var(--duration-fast),
-    transform var(--duration-fast);
+    border-color var(--duration-fast);
 }
 
 .pi-utilities-btn__icon {
@@ -361,28 +352,25 @@ pi-sidebar {
 }
 
 .pi-utilities-btn:hover {
-  background: linear-gradient(170deg, var(--white-alpha-80), var(--white-alpha-50));
+  background: var(--muted);
   color: var(--foreground);
-  border-color: var(--alpha-20);
-  box-shadow: var(--glass-shadow-lg), var(--glass-highlight), var(--glass-inner-shadow);
-  transform: translateY(-1px);
+  border-color: var(--alpha-14);
 }
 
 .pi-utilities-btn:active {
-  transform: translateY(0);
+  background: var(--accent);
 }
 
 .pi-utilities-btn:focus-visible {
   outline: none;
   border-color: var(--green-alpha-30);
-  box-shadow: 0 0 0 2px var(--green-alpha-14), var(--glass-shadow), var(--glass-highlight), var(--glass-inner-shadow);
+  box-shadow: 0 0 0 2px var(--green-alpha-14);
 }
 
 .pi-utilities-btn[aria-expanded="true"] {
-  background: linear-gradient(170deg, var(--white-alpha-80), var(--white-alpha-55));
+  background: var(--green-alpha-6);
   color: var(--foreground);
-  border-color: var(--green-alpha-30);
-  box-shadow: 0 0 0 1px var(--green-alpha-20), var(--glass-shadow), var(--glass-highlight), var(--glass-inner-shadow);
+  border-color: var(--green-alpha-25);
 }
 
 
@@ -397,30 +385,30 @@ pi-sidebar {
 }
 
 .pi-messages__inner {
-  padding: 12px 4px 28px;
+  padding: 20px 12px 40px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8px;
 }
 
 /* Footer surfaces (widget slot + input footer) */
 :is(.pi-input-area, .pi-widget-slot) {
   flex-shrink: 0;
-  padding: 6px 10px;
+  padding: 10px 14px 12px;
   position: relative;
   z-index: 10;
   background: transparent;
 }
 
-/* Input footer — soft fade into content above */
+/* Input footer — hairline separator instead of fade */
 .pi-input-area::before {
   content: '';
   position: absolute;
-  top: -10px;
-  left: 0;
-  right: 0;
-  height: 10px;
-  background: linear-gradient(to top, var(--alpha-4), transparent);
+  top: 0;
+  left: 14px;
+  right: 14px;
+  height: 1px;
+  background: var(--alpha-6);
   pointer-events: none;
 }
 
@@ -431,12 +419,11 @@ pi-sidebar {
   }
 
   .pi-messages__inner {
-    padding-top: 6px;
-    padding-bottom: 14px;
+    padding: 10px 10px 20px;
   }
 
   :is(.pi-input-area, .pi-widget-slot) {
-    padding: 4px 8px;
+    padding: 6px 10px 8px;
   }
 }
 

@@ -40,7 +40,6 @@ const ALWAYS_MUTATE_TOOLS = new Set<string>([
   "python_transform_range",
   // Arbitrary host JSAPI can mutate workbook content and structure.
   "execute_office_js",
-  "execute_wps_js",
 ]);
 
 function isToolsExecutionPolicyPayloadShape(value: DynamicValue): value is DynamicObject {
@@ -126,7 +125,7 @@ export function getToolContextImpact(toolName: string, params: DynamicValue): To
     return "structure";
   }
 
-  if (toolName === "execute_office_js" || toolName === "execute_wps_js") {
+  if (toolName === "execute_office_js") {
     return "structure";
   }
 

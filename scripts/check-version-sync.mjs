@@ -30,14 +30,6 @@ const versions = [
       "app metadata",
     ),
   ],
-  [
-    "wps/jsplugins.xml.template",
-    captureVersion(
-      "wps/jsplugins.xml.template",
-      /<jsplugin\s[\s\S]*?\bversion="([^"]+)"/u,
-      "WPS package",
-    ),
-  ],
 ];
 
 const mismatches = versions.filter(([, version]) => version !== expected);

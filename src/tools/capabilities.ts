@@ -263,7 +263,6 @@ export const AUXILIARY_UI_TOOL_NAMES = [
   "files",
   "python_transform_range",
   "execute_office_js",
-  "execute_wps_js",
 ] as const;
 
 export type AuxiliaryUiToolName = (typeof AUXILIARY_UI_TOOL_NAMES)[number];
@@ -304,7 +303,6 @@ export const TOOL_UI_METADATA = {
   files: { renderer: true, humanizer: true },
   python_transform_range: { renderer: true, humanizer: true },
   execute_office_js: { renderer: true, humanizer: true },
-  execute_wps_js: { renderer: true, humanizer: true },
 } as const satisfies Record<UiToolName, ToolUiMetadata>;
 
 export const TOOL_NAMES_WITH_RENDERER: readonly UiToolName[] = UI_TOOL_NAMES

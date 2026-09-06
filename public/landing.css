@@ -68,9 +68,11 @@
       white-space: nowrap;
     }
     .nav-mark__logo {
-      font-family: var(--font-display);
-      font-size: 20px;
-      line-height: 1;
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      object-fit: cover;
+      display: block;
     }
     .exp-badge {
       display: inline-flex;

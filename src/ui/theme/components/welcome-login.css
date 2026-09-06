@@ -1,12 +1,11 @@
 
 .pi-welcome-logo {
-  font-family: var(--font-sans);
-  font-size: var(--text-display);
-  font-weight: 700;
-  color: var(--pi-green);
-  opacity: 0.25;
-  margin-bottom: 4px;
-  text-align: center;
+  display: block;
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 16px;
+  border-radius: var(--radius-md);
+  object-fit: cover;
 }
 
 .pi-welcome-title {
@@ -14,7 +13,7 @@
   font-size: var(--text-lg);
   font-weight: 600;
   color: var(--foreground);
-  margin: 0 0 4px;
+  margin: 0 0 8px;
   text-align: center;
 }
 
@@ -22,15 +21,15 @@
   font-family: var(--font-sans);
   font-size: var(--text-base);
   color: var(--muted-foreground);
-  margin: 0 0 8px;
+  margin: 0 0 12px;
   text-align: center;
 }
 
 .pi-welcome-intro {
-  margin: 0 0 14px;
+  margin: 0 0 20px;
   font-family: var(--font-sans);
   font-size: var(--text-sm);
-  line-height: 1.45;
+  line-height: 1.55;
   color: var(--muted-foreground);
   text-align: center;
 }
@@ -213,10 +212,6 @@
 }
 
 @media (max-height: 520px) {
-  .pi-welcome-lang-bar {
-    padding: 0 0 4px !important;
-  }
-
   .pi-welcome-logo {
     display: none;
   }

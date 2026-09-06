@@ -25,6 +25,7 @@ import { getErrorMessage } from "../utils/errors.js";
 import { escapeAttr, escapeHtml, setSafeInnerHTML } from "../utils/html.js";
 import { t } from "../language/index.js";
 import { filterProvidersByAllowlist, resolveAllowedProviderIds } from "./provider-allowlist.js";
+import { OPENAI_GATEWAY_PROVIDER_PREFIX } from "../auth/custom-gateways.js";
 
 /**
  * Quick reachability check against the configured proxy URL.
@@ -214,23 +215,9 @@ export interface ProviderDef {
 }
 
 export const ALL_PROVIDERS: ProviderDef[] = [
-  // OAuth providers first (subscription / account-based flows)
-  // Only list flows that are supported in-browser (PKCE with proxy-assisted or manual callback handling).
-  // desc holds a locale key (resolved via t() at render time in buildProviderRow).
-  { id: "anthropic",          label: /* brand */ "Anthropic",                oauth: "anthropic",          desc: "provider.desc.claude" },
-  { id: "openai-codex",       label: /* brand */ "OpenAI (ChatGPT)",         oauth: "openai-codex",       desc: "provider.desc.openai_sub" },
-  { id: "google-gemini-cli",  label: /* brand */ "Google Code Assist",       oauth: "google-gemini-cli",  desc: "provider.desc.gemini_account" },
-  { id: "google-antigravity", label: /* brand */ "Google Antigravity",       oauth: "google-antigravity", desc: "provider.desc.antigravity" },
-  { id: "github-copilot",     label: /* brand */ "GitHub Copilot",           oauth: "github-copilot" },
-
-  // API key providers
-  { id: "openai",             label: /* brand */ "OpenAI (API)",             desc: "provider.desc.api_key" },
-  { id: "google",             label: /* brand */ "Google Gemini (API)",      desc: "provider.desc.api_key" },
-  { id: "deepseek",           label: /* brand */ "DeepSeek" },
-  { id: "amazon-bedrock",     label: /* brand */ "Amazon Bedrock" },
-  { id: "mistral",            label: /* brand */ "Mistral" },
-  { id: "groq",               label: /* brand */ "Groq" },
-  { id: "xai",                label: /* brand */ "xAI / Grok" },
+  // This build only exposes DeepSeek as a first-party connect provider.
+  // OpenAI-compatible custom gateways are configured separately via Settings → Gateway.
+  { id: "deepseek", label: /* brand */ "DeepSeek" },
 ];
 
 /**
@@ -244,6 +231,36 @@ export const VISIBLE_PROVIDERS: ProviderDef[] = filterProvidersByAllowlist(
     typeof import.meta.env === "undefined" ? undefined : import.meta.env.VITE_PI_ALLOWED_PROVIDERS,
   ),
 );
+
+/** First-party provider ids that remain connectable in this build. */
+export const ENABLED_BUILTIN_PROVIDER_IDS = new Set(
+  ALL_PROVIDERS.map((provider) => provider.id),
+);
+
+/** Whether a model provider id should appear in the selector for this build. */
+export function isEnabledModelProvider(
+  providerId: string,
+  customProviderNames?: ReadonlySet<string>,
+): boolean {
+  if (ENABLED_BUILTIN_PROVIDER_IDS.has(providerId)) return true;
+  if (providerId.startsWith(OPENAI_GATEWAY_PROVIDER_PREFIX)) return true;
+  if (customProviderNames?.has(providerId)) return true;
+  return false;
+}
+
+/** Keep DeepSeek + configured custom gateways; drop every other builtin provider. */
+export function filterEnabledModelProviders(
+  providerIds: Iterable<string>,
+  customProviderNames?: ReadonlySet<string>,
+): Set<string> {
+  const enabled = new Set<string>();
+  for (const providerId of providerIds) {
+    if (isEnabledModelProvider(providerId, customProviderNames)) {
+      enabled.add(providerId);
+    }
+  }
+  return enabled;
+}
 
 export interface ProviderRowCallbacks {
   onConnected: (row: HTMLElement, id: string, label: string) => void;

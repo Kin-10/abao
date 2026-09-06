@@ -164,13 +164,13 @@ void test("unsupported-host tools bypass workbook coordinator and fail fast", as
         details: { echo: "format_cells" },
       });
     }),
-    "wps",
+    "browser",
   );
 
   const wrapped = wrapSingleTool({
     tool: unsupportedTool,
     coordinator,
-    contextProvider: createContextProvider("wps_path_sha256:safe"),
+    contextProvider: createContextProvider("url_sha256:safe"),
     mutationEvents,
     invalidatedWorkbookIds,
     executionPolicy: {
@@ -188,7 +188,7 @@ void test("unsupported-host tools bypass workbook coordinator and fail fast", as
     (error: DynamicValue) => {
       assert.ok(error instanceof UnsupportedHostToolError);
       assert.equal(error.toolName, "format_cells");
-      assert.equal(error.hostKind, "wps");
+      assert.equal(error.hostKind, "browser");
       return true;
     },
   );

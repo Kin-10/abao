@@ -279,6 +279,17 @@ void test("context pill headers expose expanded state and controlled body", asyn
   assert.match(sidebarSource, /class="pi-context-pill__body" id=\$\{this\._contextPillBodyId\}/);
 });
 
+void test("sidebar copies transcript arrays before binding message-list", async () => {
+  // Agent mutates state.messages in place; Lit Array props are ref-equal.
+  // Binding a sliced copy is required or new turns never appear in history.
+  const sidebarSource = await readFile(new URL("../src/ui/pi-sidebar.ts", import.meta.url), "utf8");
+
+  assert.match(sidebarSource, /const messages = state\.messages\.slice\(\);/);
+  assert.match(sidebarSource, /const tools = state\.tools\.slice\(\);/);
+  assert.match(sidebarSource, /\.messages=\$\{messages\}/);
+  assert.match(sidebarSource, /<message-list[\s\S]*\.messages=\$\{messages\}/);
+});
+
 void test("input paperclip opens Files workspace through sidebar callback", async () => {
   const inputSource = await readFile(new URL("../src/ui/pi-input.ts", import.meta.url), "utf8");
   const sidebarSource = await readFile(new URL("../src/ui/pi-sidebar.ts", import.meta.url), "utf8");

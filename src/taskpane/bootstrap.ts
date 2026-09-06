@@ -45,7 +45,7 @@ export function bootstrapTaskpane(): void {
   installProcessEnvShim();
   installFetchInterceptor();
 
-  // Host bootstrap (Office/WPS/browser fallback for local dev)
+  // Host bootstrap (Office.js, or browser fallback for local UI tests)
   let initialized = false;
 
   const runInit = () => {
@@ -106,8 +106,6 @@ export function bootstrapTaskpane(): void {
         console.log(
           `[pi] Office.js ready: host=${nativeHost}, platform=${nativePlatform}`,
         );
-      } else if (readyInfo.reason === "wps-jsapi") {
-        console.log("[pi] WPS JSAPI detected — initializing WPS host");
       } else if (readyInfo.reason === "office-timeout") {
         console.warn("[pi] Office.js not ready after 3s — initializing without Excel");
       } else {

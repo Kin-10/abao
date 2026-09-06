@@ -695,6 +695,13 @@ export class PiSidebar extends LitElement {
     // batch operations like replaceMessages() that don't fire per-message events.
     const hasMessages = this._hasMessages || state.messages.length > 0;
 
+    // Agent mutates `state.messages` / `state.tools` in place on message_end.
+    // Lit Array properties use reference equality, so pass a shallow copy or
+    // <message-list> will keep rendering a stale transcript (new user turns
+    // missing; completed assistant replies vanish when streaming clears).
+    const messages = state.messages.slice();
+    const tools = state.tools.slice();
+
     return html`
       ${this._renderSessionTabs()}
       ${this._renderTabContextMenuOverlay()}
@@ -702,15 +709,15 @@ export class PiSidebar extends LitElement {
         <div class="pi-messages__inner">
           ${hasMessages ? html`
             <message-list
-              .messages=${state.messages}
-              .tools=${state.tools}
+              .messages=${messages}
+              .tools=${tools}
               .pendingToolCalls=${state.pendingToolCalls}
               .isStreaming=${state.isStreaming}
             ></message-list>
             ${this._renderContextPill()}
             <streaming-message-container
               class="${state.isStreaming ? "" : "hidden"}"
-              .tools=${state.tools}
+              .tools=${tools}
               .isStreaming=${state.isStreaming}
               .pendingToolCalls=${state.pendingToolCalls}
               .toolResultsById=${toolResultsById}
@@ -1210,7 +1217,7 @@ export class PiSidebar extends LitElement {
     return html`
       <div class="pi-empty">
         <div class="pi-empty__content">
-          <div class="pi-empty__logo">π</div>
+          <img class="pi-empty__logo" src="/assets/logo.png" alt="Pi for Excel" width="72" height="72" decoding="async" />
           <p class="pi-empty__tagline">
             ${t("sidebar.empty.tagline")}
           </p>

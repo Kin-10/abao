@@ -100,9 +100,11 @@
       white-space: nowrap;
     }
     .nav-mark__logo {
-      font-family: var(--font-display);
-      font-size: 20px;
-      line-height: 1;
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      object-fit: cover;
+      display: block;
     }
     .exp-badge {
       display: inline-flex;
@@ -1658,7 +1660,7 @@
 
   <!-- ── Nav (matches landing) ── -->
   <nav>
-    <a href="/" class="nav-mark"><span class="nav-mark__logo">π</span> <span class="nav-mark__text">Pi for Excel</span> <span class="exp-badge">Experimental</span></a>
+    <a href="/" class="nav-mark"><img class="nav-mark__logo" src="/assets/logo.png" alt="" width="28" height="28" decoding="async" /> <span class="nav-mark__text">Pi for Excel</span> <span class="exp-badge">Experimental</span></a>
     <div class="nav-links">
       <a href="/#install">Install</a>
       <a href="/#connect">Connect</a>

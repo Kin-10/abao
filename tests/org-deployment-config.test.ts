@@ -10,8 +10,8 @@ import assert from "node:assert/strict";
 import {
   CODEX_WEBSOCKET_BRIDGE_HEADER,
   DEFAULT_LOCAL_PROXY_URL,
+  DEFAULT_PROXY_URL,
   PROXY_HEALTH_HEADER,
-  WPS_DEV_HOST_GATEWAY_PROXY_URL,
   probeCodexWebSocketBridge,
   resolveDefaultProxyUrl,
   resolveRuntimeDefaultProxyUrl,
@@ -46,18 +46,14 @@ void test("resolveDefaultProxyUrl refuses http (mixed content) and garbage", () 
   assert.equal(resolveDefaultProxyUrl("https://"), DEFAULT_LOCAL_PROXY_URL);
 });
 
-void test("resolveRuntimeDefaultProxyUrl uses host-gateway proxy for WPS HTTP harness", () => {
-  assert.equal(
-    resolveRuntimeDefaultProxyUrl({ hostKind: "wps", location: { protocol: "http:", hostname: "10.0.2.2" } }),
-    WPS_DEV_HOST_GATEWAY_PROXY_URL,
-  );
+void test("resolveRuntimeDefaultProxyUrl always uses the Office default proxy", () => {
   assert.equal(
     resolveRuntimeDefaultProxyUrl({ hostKind: "office", location: { protocol: "http:", hostname: "10.0.2.2" } }),
-    DEFAULT_LOCAL_PROXY_URL,
+    DEFAULT_PROXY_URL,
   );
   assert.equal(
-    resolveRuntimeDefaultProxyUrl({ hostKind: "wps", location: { protocol: "https:", hostname: "10.0.2.2" } }),
-    DEFAULT_LOCAL_PROXY_URL,
+    resolveRuntimeDefaultProxyUrl({ hostKind: "browser", location: { protocol: "https:", hostname: "10.0.2.2" } }),
+    DEFAULT_PROXY_URL,
   );
 });
 
@@ -149,4 +145,19 @@ void test("filterProvidersByAllowlist fails open on fully mismatched allowlist",
   const allowed = resolveAllowedProviderIds("no-such-provider");
   const filtered = filterProvidersByAllowlist(PROVIDERS, allowed);
   assert.deepEqual(filtered.map((p) => p.id), ["anthropic", "openai", "deepseek"]);
+});
+
+void test("this build only exposes DeepSeek as a connectable builtin provider", async () => {
+  const { ALL_PROVIDERS, filterEnabledModelProviders, isEnabledModelProvider } = await import(
+    "../src/ui/provider-login.ts"
+  );
+
+  assert.deepEqual(ALL_PROVIDERS.map((provider) => provider.id), ["deepseek"]);
+  assert.equal(isEnabledModelProvider("deepseek"), true);
+  assert.equal(isEnabledModelProvider("anthropic"), false);
+  assert.equal(isEnabledModelProvider("Gateway · Local Ollama"), true);
+  assert.deepEqual(
+    [...filterEnabledModelProviders(["anthropic", "deepseek", "Gateway · Local Ollama", "openai"])].sort(),
+    ["Gateway · Local Ollama", "deepseek"],
+  );
 });

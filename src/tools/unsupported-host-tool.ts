@@ -4,7 +4,6 @@ import type { AgentTool } from "@earendil-works/pi-agent-core";
 import type { TSchema } from "typebox";
 
 import type { SpreadsheetHostKind } from "../host/index.js";
-import { WPS_UNSUPPORTED_PHASE_1_MESSAGE } from "../host/index.js";
 
 const UNSUPPORTED_HOST_TOOL_MARKER = Symbol("pi.unsupportedHostTool");
 
@@ -13,10 +12,6 @@ interface UnsupportedHostToolMarker {
 }
 
 function unsupportedMessage(hostKind: SpreadsheetHostKind, toolName: string): string {
-  if (hostKind === "wps") {
-    return `${toolName} is not yet supported on WPS Spreadsheets. ${WPS_UNSUPPORTED_PHASE_1_MESSAGE}`;
-  }
-
   return `${toolName} is not supported on host '${hostKind}'.`;
 }
 

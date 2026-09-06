@@ -23,6 +23,9 @@ interface RenderItem {
 }
 
 export class MessageList extends LitElement {
+  // Parent must pass a fresh array identity when the agent mutates
+  // `state.messages` in place (see `.slice()` in `pi-sidebar`). Lit's default
+  // Array `hasChanged` is reference equality and would otherwise skip renders.
   @property({ type: Array }) messages: AgentMessage[] = [];
   @property({ type: Array }) tools: AgentTool[] = [];
   @property({ type: Object }) pendingToolCalls?: ReadonlySet<string>;

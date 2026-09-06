@@ -68,8 +68,6 @@ const CORE_TOOL_FACTORIES = {
   skills: (options) => createSkillsTool(options.skills),
 } satisfies Record<CoreToolName, CoreToolFactory>;
 
-export { isCoreToolUnsupportedOnWps } from "./host-selection.js";
-
 /** Create all core (built-in) tools for the agent. */
 export function createCoreTools(options: CreateCoreToolsOptions = {}): AnyCoreTool[] {
   const hostKind = options.hostKind ?? "office";

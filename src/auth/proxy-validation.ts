@@ -9,7 +9,6 @@
 import type { SpreadsheetHostKind } from "../host/types.js";
 
 export const DEFAULT_LOCAL_PROXY_URL = "https://localhost:3003";
-export const WPS_DEV_HOST_GATEWAY_PROXY_URL = "http://10.0.2.2:3003";
 
 /**
  * Resolve the build-time default proxy URL override (org/central deployments).
@@ -72,21 +71,12 @@ export function normalizeProxyUrl(url: string): string {
 }
 
 /**
- * Resolve the runtime default proxy URL, including host-specific dev defaults.
+ * Resolve the runtime default proxy URL.
  */
-export function resolveRuntimeDefaultProxyUrl(options?: {
+export function resolveRuntimeDefaultProxyUrl(_options?: {
   hostKind?: SpreadsheetHostKind;
   location?: Pick<Location, "hostname" | "protocol">;
 }): string {
-  const loc = options?.location ?? (typeof window === "undefined" ? undefined : window.location);
-  if (
-    options?.hostKind === "wps" &&
-    loc?.protocol === "http:" &&
-    loc.hostname === "10.0.2.2"
-  ) {
-    return WPS_DEV_HOST_GATEWAY_PROXY_URL;
-  }
-
   return DEFAULT_PROXY_URL;
 }
 

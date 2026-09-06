@@ -18,7 +18,6 @@ This folder contains **current** docs that should match shipped behavior.
 - [Agent Skills interop (skills vs integrations)](./agent-skills-interop.md)
 - [Compaction (`/compact`)](./compaction.md)
 - [Manual full-workbook backups (`/backup`)](./manual-full-backups.md)
-- [WPS Spreadsheets support plan](./wps-support.md)
 
 ## Proposals
 - [Agent tool interface redesign](./proposals/agent-tool-interface-redesign.md)

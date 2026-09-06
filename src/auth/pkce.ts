@@ -156,7 +156,8 @@ export async function sha256ForPkce(bytes: Uint8Array): Promise<Uint8Array> {
       new Uint8Array(input).set(bytes);
       return new Uint8Array(await subtle.digest("SHA-256", input));
     } catch {
-      // WPS/dev HTTP can expose crypto.getRandomValues without usable subtle crypto.
+      // Prefer getRandomValues-backed UUID when subtle crypto is unavailable
+      // (some older/dev webviews expose getRandomValues without usable subtle).
     }
   }
 

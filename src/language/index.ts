@@ -11,10 +11,10 @@
  *   element.textContent = t("welcome.subtitle");
  *   element.textContent = t("settings.toast.connected", { label: "Anthropic" });
  *
- * `en.json` is the source of truth. Untranslated keys silently fall back to
+ * `en.json` is the source of truth for key inventory. This build locks the UI
+ * to `zh-CN` (no language picker). Untranslated keys silently fall back to
  * English; unknown keys render the key itself (visible in dev, harmless in
- * production). Language is persisted in SettingsStore and applied at boot;
- * switching reloads the taskpane.
+ * production).
  */
 
 import en from "./locales/en.json" with { type: "json" };
@@ -28,7 +28,7 @@ const translations: Record<SupportedLanguage, Record<string, string>> = {
   "zh-CN": zhCN,
 };
 
-let currentLang: SupportedLanguage = "en";
+let currentLang: SupportedLanguage = "zh-CN";
 
 export function isSupportedLanguage(lang: string): lang is SupportedLanguage {
   return (SUPPORTED_LANGUAGES as readonly string[]).includes(lang);

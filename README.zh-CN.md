@@ -5,7 +5,7 @@
 > [!NOTE]
 > 本简体中文指南由 AI 翻译/生成，可能存在译文问题；如与英文文档不一致，请以英文版为准。欢迎提 [Issue](https://github.com/tmustier/pi-for-excel/issues) 指正。
 
-> 本文档是简要中文指南，仅涵盖 **Microsoft Excel 加载项**的**安装**与**模型配置**。完整功能说明、开发者文档等请参阅[英文版 README](./README.md) 与 [docs/](./docs/README.md) 目录。WPS 表格支持另见英文文档 [docs/wps-support.md](./docs/wps-support.md)。
+> 本文档是简要中文指南，仅涵盖 **Microsoft Excel 加载项**的**安装**与**模型配置**。完整功能说明、开发者文档等请参阅[英文版 README](./README.md) 与 [docs/](./docs/README.md) 目录。
 
 Pi for Excel 是一款开源、多模型的 Microsoft Excel AI 侧边栏加载项,由 [Pi](https://pi.dev) 驱动。
 
@@ -171,7 +171,6 @@ npx pi-for-excel-proxy
 | [docs/integrations-external-tools.md](./docs/integrations-external-tools.md) | 联网搜索 + MCP 集成配置 |
 | [docs/extensions.md](./docs/extensions.md) | 扩展开发指南 |
 | [docs/security-threat-model.md](./docs/security-threat-model.md) | 安全威胁模型 |
-| [docs/wps-support.md](./docs/wps-support.md) | WPS 表格支持现状与安装路径 |
 
 ## 许可证
 

@@ -91,12 +91,12 @@
   opacity: 1;
 }
 .pi-status-model__mark {
-  font-family: var(--font-sans);
-  font-size: var(--text-base);
-  font-weight: 700;
-  color: var(--primary);
-  line-height: 1;
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  object-fit: cover;
   flex-shrink: 0;
+  display: block;
 }
 .pi-status-model__name {
   white-space: nowrap;
@@ -206,25 +206,25 @@
 }
 
 .pi-status-mode--auto {
-  border: 1px solid oklch(0.66 0.19 145 / 0.38);
-  background: oklch(0.66 0.19 145 / 0.12);
-  color: oklch(0.45 0.15 145);
+  border: 1px solid var(--green-alpha-25);
+  background: var(--green-alpha-6);
+  color: var(--primary);
 }
 
 .pi-status-mode--auto:hover {
-  background: oklch(0.66 0.19 145 / 0.2);
-  border-color: oklch(0.66 0.19 145 / 0.48);
+  background: var(--green-alpha-12);
+  border-color: var(--green-alpha-30);
 }
 
 .pi-status-mode--confirm {
-  border: 1px solid oklch(0.65 0.17 40 / 0.38);
-  background: oklch(0.65 0.17 40 / 0.12);
-  color: oklch(0.48 0.12 40);
+  border: 1px solid oklch(0.58 0.1 55 / 0.28);
+  background: oklch(0.58 0.1 55 / 0.08);
+  color: oklch(0.42 0.08 55);
 }
 
 .pi-status-mode--confirm:hover {
-  background: oklch(0.65 0.17 40 / 0.2);
-  border-color: oklch(0.65 0.17 40 / 0.48);
+  background: oklch(0.58 0.1 55 / 0.14);
+  border-color: oklch(0.58 0.1 55 / 0.36);
 }
 
 /* Context debug pill — collapsible block matching thinking-block style. */
@@ -556,7 +556,7 @@
 }
 
 .pi-status-popover__item.is-active {
-  border-color: oklch(0.45 0.12 160 / 0.36);
+  border-color: var(--green-alpha-30);
   background: var(--green-alpha-12);
 }
 

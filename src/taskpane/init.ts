@@ -124,6 +124,8 @@ import { setActiveProviders } from "../models/active-providers.js";
 import { BrowserModelRuntime } from "../models/browser-model-runtime.js";
 import { promptForProviderConnection } from "../ui/api-key-dialog.js";
 import { openModelSelectorDialog } from "../ui/model-selector-dialog.js";
+import { filterEnabledModelProviders } from "../ui/provider-login.js";
+import { collectCustomProviderRuntimeInfo } from "../auth/custom-gateways.js";
 import { getCurrentSpreadsheetHost, type SpreadsheetHostKind } from "../host/index.js";
 import { createWorkbookCoordinator } from "../workbook/coordinator.js";
 import { formatWorkbookLabel, type WorkbookContext } from "../workbook/context.js";
@@ -227,13 +229,8 @@ export async function initTaskpane(opts: {
   // 1. Storage
   const { providerKeys, sessions, settings, customProviders, modelCatalogs } = initAppStorage();
 
-  // Initialize language from storage
-  try {
-    const lang = await settings.get<string>("language");
-    initLanguage(lang || "en");
-  } catch {
-    initLanguage("en");
-  }
+  // UI is Chinese-only for this build.
+  initLanguage("zh-CN");
 
   // Seed a predictable proxy default for OAuth flows.
   await ensureDefaultProxyUrl(settings, spreadsheetHost.kind);
@@ -303,9 +300,13 @@ export async function initTaskpane(opts: {
 
   const updateAvailableProviderState = async (): Promise<void> => {
     const availableModels = await modelRuntime.models.getAvailable();
-    const combinedProviders = new Set(availableModels.map((model) => model.provider));
+    const customRuntime = collectCustomProviderRuntimeInfo(await customProviders.getAll());
+    const combinedProviders = filterEnabledModelProviders(
+      availableModels.map((model) => model.provider),
+      customRuntime.providerNames,
+    );
     availableProviders = Array.from(combinedProviders);
-    defaultModel = pickDefaultModel(modelRuntime.models, availableProviders, null);
+    defaultModel = pickDefaultModel(modelRuntime.models, availableProviders, customRuntime.defaultModel);
     setActiveProviders(combinedProviders);
     document.dispatchEvent(new Event("pi:models-changed"));
   };
@@ -948,11 +949,8 @@ export async function initTaskpane(opts: {
       const gatedCoreTools = await applyExperimentalToolGates(coreTools, {
         getExecutionMode: () => Promise.resolve(getExecutionMode()),
         requestOfficeJsExecuteApproval: (request) => {
-          const apiName = request.apiName ?? "Office.js";
           return requestRuntimeToolApproval({
-            title: apiName === "WPS JSAPI"
-              ? t("init.confirm.wpsJsTitle")
-              : t("init.confirm.officeJsTitle"),
+            title: t("init.confirm.officeJsTitle"),
             message: buildOfficeJsExecuteApprovalMessage(request),
             confirmLabel: t("init.confirm.allowOnce"),
           });

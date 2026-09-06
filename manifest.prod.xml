@@ -7,14 +7,14 @@
   xsi:type="TaskPaneApp">
 
   <Id>a1b2c3d4-e5f6-7890-abcd-ef1234567890</Id>
-  <Version>1.0.0.0</Version>
+  <Version>1.0.0.1</Version>
   <ProviderName>Pi for Excel</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
   <DisplayName DefaultValue="Pi for Excel" />
   <Description DefaultValue="Open-source, multi-model AI sidebar add-in for Excel. Powered by Pi." />
-  <IconUrl DefaultValue="https://pi-for-excel.vercel.app/assets/icon-32.png" />
-  <HighResolutionIconUrl DefaultValue="https://pi-for-excel.vercel.app/assets/icon-80.png" />
-  <SupportUrl DefaultValue="https://github.com/tmustier/pi-for-excel" />
+  <IconUrl DefaultValue="https://pi-for-excel.vercel.app/assets/icon-32.png?v=panda1" />
+  <HighResolutionIconUrl DefaultValue="https://pi-for-excel.vercel.app/assets/icon-80.png?v=panda1" />
+  <SupportUrl DefaultValue="https://github.com/tmustier/pi-for-excel/issues/new/choose" />
 
   <Hosts>
     <Host Name="Workbook" />
@@ -64,9 +64,9 @@
 
     <Resources>
       <bt:Images>
-        <bt:Image id="Icon16" DefaultValue="https://pi-for-excel.vercel.app/assets/icon-16.png" />
-        <bt:Image id="Icon32" DefaultValue="https://pi-for-excel.vercel.app/assets/icon-32.png" />
-        <bt:Image id="Icon80" DefaultValue="https://pi-for-excel.vercel.app/assets/icon-80.png" />
+        <bt:Image id="Icon16" DefaultValue="https://pi-for-excel.vercel.app/assets/icon-16.png?v=panda1" />
+        <bt:Image id="Icon32" DefaultValue="https://pi-for-excel.vercel.app/assets/icon-32.png?v=panda1" />
+        <bt:Image id="Icon80" DefaultValue="https://pi-for-excel.vercel.app/assets/icon-80.png?v=panda1" />
       </bt:Images>
       <bt:Urls>
         <bt:Url id="TaskpaneUrl" DefaultValue="https://pi-for-excel.vercel.app/src/taskpane.html" />

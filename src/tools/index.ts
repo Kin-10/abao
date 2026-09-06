@@ -15,7 +15,6 @@ import { createLibreOfficeConvertTool } from "./libreoffice-convert.js";
 import { createPythonTransformRangeTool } from "./python-transform-range.js";
 import { createFilesTool } from "./files.js";
 import { createExecuteOfficeJsTool } from "./execute-office-js.js";
-import { createExecuteWpsJsTool } from "./execute-wps-js.js";
 import {
   createExtensionsManagerTool,
   type ExtensionsManagerToolRuntime,
@@ -48,7 +47,6 @@ export function createAllTools(options: CreateAllToolsOptions = {}): AnyCoreTool
     selectOfficeCoupledToolForHost(createPythonTransformRangeTool(), hostKind),
     createFilesTool(),
     selectOfficeCoupledToolForHost(createExecuteOfficeJsTool(), hostKind),
-    ...(hostKind === "wps" ? [createExecuteWpsJsTool()] : []),
     createExtensionsManagerTool({ getManager: getExtensionManager }),
   ];
 }

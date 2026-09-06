@@ -101,25 +101,6 @@ const GPT_56_THINKING_LEVELS: Record<OpenAiProvider, string[]> = {
   "openai-codex": ["off", "minimal", "low", "medium", "high", "xhigh", "max"],
 };
 
-function pickExpectedOpenAiDefault(provider: OpenAiProvider): Model<Api> | null {
-  const models = getModels(provider);
-  const bestGeneral = models
-    .filter((model) => isOpenAiGeneralGptModelId(model.id))
-    .sort((a, b) => compareOpenAiModelIds(a.id, b.id))[0];
-  const bestCodex = models
-    .filter((model) => isOpenAiCodexModelId(model.id))
-    .sort((a, b) => compareOpenAiModelIds(a.id, b.id))[0];
-
-  if (bestGeneral && bestCodex) {
-    return shouldPreferOpenAiGeneralModel(bestGeneral.id, bestCodex.id) ? bestGeneral : bestCodex;
-  }
-
-  if (bestGeneral) return bestGeneral;
-  if (bestCodex) return bestCodex;
-
-  return models.slice().sort((a, b) => compareOpenAiModelIds(a.id, b.id))[0] ?? null;
-}
-
 void test("parseMajorMinor packs Claude-style -major-minor as major*10+minor", () => {
   assert.equal(parseMajorMinor("claude-opus-4-6"), 46);
   assert.equal(parseMajorMinor("claude-opus-4-7"), 47);
@@ -281,22 +262,19 @@ void test("Claude Fable 5 registry metadata is usable by the add-in", () => {
   assert.ok(fable.contextWindow >= 1_000_000, "expected a 1M-token context window");
 });
 
-void test("pickDefaultModel prefers the latest Opus for Anthropic-only setups", () => {
-  const models = getModels("anthropic");
-  const opus = models.filter((m) => m.id.startsWith("claude-opus-"));
-  assert.ok(opus.length > 0, "expected at least one Opus model in the registry");
+void test("pickDefaultModel prefers the latest DeepSeek model when DeepSeek is available", () => {
+  const models = getModels("deepseek");
+  assert.ok(models.length > 0, "expected at least one DeepSeek model in the registry");
 
-  const selected = pickDefaultModel(["anthropic"]);
-  assert.equal(selected.provider, "anthropic");
-  assert.equal(selected.id, "claude-opus-5");
+  const selected = pickDefaultModel(["deepseek"]);
+  assert.equal(selected.provider, "deepseek");
+  assert.equal(selected.id, "deepseek-v4-pro");
 });
 
-void test("current OpenAI providers select GPT-5.6 Sol as the default", () => {
-  for (const provider of OPENAI_PROVIDERS) {
-    const selected = pickDefaultModel([provider]);
-    assert.equal(selected.provider, provider);
-    assert.equal(selected.id, "gpt-5.6-sol");
-  }
+void test("pickDefaultModel prefers DeepSeek over other configured providers", () => {
+  const selected = pickDefaultModel(["anthropic", "openai", "deepseek"]);
+  assert.equal(selected.provider, "deepseek");
+  assert.equal(selected.id, "deepseek-v4-pro");
 });
 
 void test("Bedrock provider uses the browser-safe unsupported-provider stub", async () => {
@@ -320,26 +298,13 @@ void test("Bedrock provider uses the browser-safe unsupported-provider stub", as
   assert.match(selected.errorMessage ?? "", /Amazon Bedrock is not supported/);
 });
 
-void test("pickDefaultModel matches the current OpenAI default-selection contract", () => {
-  for (const provider of OPENAI_PROVIDERS) {
-    const expected = pickExpectedOpenAiDefault(provider);
-    assert.ok(expected, `expected OpenAI default candidate for ${provider}`);
-
-    const selected = pickDefaultModel([provider]);
-    assert.equal(selected.provider, provider);
-    assert.equal(selected.id, expected.id);
-  }
-});
-
-void test("pickDefaultModel falls back to the preferred hardcoded OpenAI default", () => {
+void test("pickDefaultModel falls back to the preferred hardcoded DeepSeek default", () => {
   const selected = pickDefaultModel([]);
-  assert.equal(selected.provider, "openai");
-  assert.equal(selected.id, "gpt-5.6-sol");
+  assert.equal(selected.provider, "deepseek");
+  assert.equal(selected.id, "deepseek-v4-pro");
 });
 
 void test("pickDefaultModel never picks an unusable provider while a configured provider has models (#553)", () => {
-  // Providers with registry models but no dedicated default-model rule used
-  // to fall through to an OpenAI API model, which the user has no credentials for.
   for (const provider of ["github-copilot", "mistral", "groq", "xai", "deepseek"]) {
     const models = getModels(provider);
     assert.ok(models.length > 0, `expected registry models for ${provider}`);
@@ -353,16 +318,10 @@ void test("pickDefaultModel never picks an unusable provider while a configured 
   }
 });
 
-void test("pickDefaultModel tolerates unknown provider names", () => {
+void test("pickDefaultModel tolerates unknown provider names by falling back to DeepSeek", () => {
   const selected = pickDefaultModel(["some-custom-gateway"]);
-  assert.equal(selected.provider, "openai");
-  assert.equal(selected.id, "gpt-5.6-sol");
-});
-
-void test("pickDefaultModel prefers GPT-5.6 Sol when OpenAI and Anthropic are both available", () => {
-  const selected = pickDefaultModel(["anthropic", "openai"]);
-  assert.equal(selected.provider, "openai");
-  assert.equal(selected.id, "gpt-5.6-sol");
+  assert.equal(selected.provider, "deepseek");
+  assert.equal(selected.id, "deepseek-v4-pro");
 });
 
 void test("modelRecencyScore prefers higher version, then later date suffix", () => {

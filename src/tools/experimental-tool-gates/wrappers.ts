@@ -11,7 +11,6 @@ import {
 } from "./evaluation.js";
 import {
   EXECUTE_OFFICE_JS_TOOL_NAME,
-  EXECUTE_WPS_JS_TOOL_NAME,
   PYTHON_BRIDGE_ONLY_TOOL_NAMES,
   PYTHON_FALLBACK_TOOL_NAMES,
   TMUX_TOOL_NAME,
@@ -211,7 +210,6 @@ export function buildOfficeJsExecuteApprovalMessage(
     ?? "(no code preview)";
 
   const apiName = request.apiName ?? "Office.js";
-  const hostApiLabel = apiName === "WPS JSAPI" ? "the WPS JSAPI" : "the Excel API";
   const lines = [
     `Allow direct ${apiName} execution?`,
     "",
@@ -223,7 +221,7 @@ export function buildOfficeJsExecuteApprovalMessage(
   if (riskIdentifiers.length > 0) {
     lines.push(
       "",
-      `⚠️ Code references browser capabilities beyond ${hostApiLabel}: ${riskIdentifiers.join(", ")}.`,
+      `⚠️ Code references browser capabilities beyond the Excel API: ${riskIdentifiers.join(", ")}.`,
       "These can reach network, storage, or credentials — review the code before allowing.",
     );
   }
@@ -241,7 +239,7 @@ function defaultRequestOfficeJsExecuteApproval(
 
 function getDirectJsExecuteApprovalRequest(
   params: DynamicValue,
-  apiName: "Office.js" | "WPS JSAPI",
+  apiName: "Office.js",
 ): OfficeJsExecuteApprovalRequest {
   if (!isExperimentalGateParamsShape(params)) {
     return {
@@ -294,7 +292,7 @@ function wrapTmuxToolWithHardGate(
 function wrapDirectWorkbookJsToolWithHardGate(
   tool: AgentTool,
   dependencies: ExperimentalToolGateDependencies,
-  apiName: "Office.js" | "WPS JSAPI",
+  apiName: "Office.js",
 ): AgentTool {
   const requestApproval =
     dependencies.requestOfficeJsExecuteApproval
@@ -464,10 +462,10 @@ function wrapPythonBridgeOnlyToolWithApprovalGate(
  *   reachable bridge is present.
  * - `libreoffice_convert` strictly requires a configured + reachable bridge and
  *   approval (no Pyodide fallback).
- * - `execute_office_js` and `execute_wps_js` prompt for confirmation on every
- *   call in Confirm mode. In Auto mode, pure host JSAPI code runs without a
- *   prompt, but code referencing ambient browser authority (network, storage,
- *   globals, dynamic evaluation) still requires per-call approval.
+ * - `execute_office_js` prompts for confirmation on every call in Confirm mode.
+ *   In Auto mode, pure host JSAPI code runs without a prompt, but code
+ *   referencing ambient browser authority (network, storage, globals, dynamic
+ *   evaluation) still requires per-call approval.
  * - `files` has no gate — read, write, and delete are always available.
  */
 export function applyExperimentalToolGates(
@@ -489,11 +487,6 @@ export function applyExperimentalToolGates(
 
     if (tool.name === EXECUTE_OFFICE_JS_TOOL_NAME) {
       gatedTools.push(wrapDirectWorkbookJsToolWithHardGate(tool, dependencies, "Office.js"));
-      continue;
-    }
-
-    if (tool.name === EXECUTE_WPS_JS_TOOL_NAME) {
-      gatedTools.push(wrapDirectWorkbookJsToolWithHardGate(tool, dependencies, "WPS JSAPI"));
       continue;
     }
 

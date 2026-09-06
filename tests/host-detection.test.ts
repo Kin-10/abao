@@ -7,7 +7,7 @@ import {
   resolveSpreadsheetHostForBoot,
 } from "../src/host/index.ts";
 
-type GlobalKey = "Office" | "wps" | "Application";
+type GlobalKey = "Office";
 type MaybePromise<T> = T | Promise<T>;
 
 function readGlobal(key: string): DynamicValue {
@@ -64,21 +64,16 @@ async function withoutHostGlobals<T>(fn: () => MaybePromise<T>): Promise<T> {
   }
 }
 
-void test("detectSpreadsheetHost prefers WPS when the wps global is present", async () => {
-  await withoutHostGlobals(async () => {
-    await withGlobal("Office", { onReady: () => Promise.resolve({ host: "Excel", platform: "PC" }) }, async () => {
-      await withGlobal("wps", { Application: {} }, () => {
-        assert.equal(detectSpreadsheetHost(), "wps");
-      });
-    });
-  });
-});
-
-void test("detectSpreadsheetHost detects the WPS Application global", async () => {
-  await withoutHostGlobals(async () => {
-    await withGlobal("Application", {}, () => {
-      assert.equal(detectSpreadsheetHost(), "wps");
-    });
+void test("detectSpreadsheetHost ignores WPS globals and stays browser without Office", async () => {
+  await withoutHostGlobals(() => {
+    writeGlobal("wps", { Application: {} });
+    writeGlobal("Application", {});
+    try {
+      assert.equal(detectSpreadsheetHost(), "browser");
+    } finally {
+      deleteGlobal("wps");
+      deleteGlobal("Application");
+    }
   });
 });
 
@@ -119,8 +114,6 @@ void test("resolveSpreadsheetHostForBoot keeps the Office host after Office.onRe
 
     await withGlobal("Office", officeGlobal, async () => {
       const result = await resolveSpreadsheetHostForBoot({ officeReadyTimeoutMs: 5 });
-      // The Office host is kept so workbook identity/theme keep reading Office
-      // globals lazily, matching pre-host-seam behavior for slow Office startups.
       assert.equal(result.host.kind, "office");
       assert.equal(result.readyInfo.reason, "office-timeout");
     });

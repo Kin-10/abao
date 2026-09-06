@@ -7,31 +7,31 @@
 .pi-message-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
 }
 
 /* Streaming message wrapper */
 .pi-streaming-body {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-bottom: 12px;
+  gap: 16px;
+  margin-bottom: 16px;
 }
 
 /* User message — white card, right-aligned */
 .pi-user-row {
   display: flex;
   justify-content: flex-end;
-  margin-left: 8px;
-  margin-right: 8px;
+  margin-left: 4px;
+  margin-right: 4px;
 }
 
 .user-message-container {
-  padding: 8px 16px;
-  background: var(--pill-bg);
-  border: var(--pill-border);
+  padding: 10px 14px;
+  background: var(--muted);
+  border: 1px solid var(--alpha-6);
   border-radius: var(--pill-radius);
-  box-shadow: var(--pill-shadow);
+  box-shadow: none;
   max-width: calc(100% - var(--pill-inset));
   margin-left: var(--pill-inset);
 }
@@ -81,9 +81,9 @@ assistant-message { margin-right: var(--pill-inset); }
 .pi-assistant-body {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding-left: 12px;
-  padding-right: 12px;
+  gap: 14px;
+  padding-left: 4px;
+  padding-right: 4px;
 }
 
 /* Assistant error row */

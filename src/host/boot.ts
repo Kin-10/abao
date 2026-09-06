@@ -4,7 +4,6 @@ import { BrowserHost } from "./browser-host.js";
 import { detectSpreadsheetHost } from "./detection.js";
 import { OfficeHost } from "./office-host.js";
 import type { SpreadsheetHost, SpreadsheetHostReadyInfo } from "./types.js";
-import { WpsHost } from "./wps-host.js";
 
 export interface SpreadsheetHostBootResult {
   host: SpreadsheetHost;
@@ -37,11 +36,6 @@ export async function resolveSpreadsheetHostForBoot(
   options: ResolveSpreadsheetHostForBootOptions = {},
 ): Promise<SpreadsheetHostBootResult> {
   const detected = detectSpreadsheetHost();
-
-  if (detected === "wps") {
-    const host = new WpsHost();
-    return { host, readyInfo: await host.whenReady() };
-  }
 
   if (detected === "browser") {
     const host = new BrowserHost();
